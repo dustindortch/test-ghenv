@@ -1,9 +1,11 @@
+---
 name: Testing Secret
 
 on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   id-token: write
 
@@ -13,12 +15,18 @@ jobs:
     name: "Testing Secrets"
     runs-on: ubuntu-latest
     steps:
-      - id: authenticate
+      - id: auth
         name: Authenticate to GitHub App
         uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ vars.GH_APP_ID }}
           owner: ${{ github.repository_owner }}
           private-key: ${{ secrets.GH_APP_PEM_FILE }}
-          repositories: |
-            ${{ github.event.repository.name }}
+
+      - env:
+          GH_TOKEN: ${{ steps.auth.outputs.token }}
+        id: octocat
+        name: Use Token
+        run: |
+          gh api octocat
+...
