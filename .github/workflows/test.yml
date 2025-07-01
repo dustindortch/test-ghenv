@@ -15,16 +15,16 @@ jobs:
     name: "Testing Secrets"
     runs-on: ubuntu-latest
     steps:
-      # - id: auth
-      #   name: Authenticate to GitHub App
-      #   uses: actions/create-github-app-token@v2
-      #   with:
-      #     app-id: ${{ vars.GH_APP_ID }}
-      #     owner: ${{ github.repository_owner }}
-      #     private-key: ${{ secrets.GH_APP_PEM_FILE }}
+      - id: auth
+        name: Authenticate to GitHub App
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.GH_APP_ID }}
+          owner: ${{ github.repository_owner }}
+          private-key: ${{ secrets.GH_APP_PEM_FILE }}
 
       - env:
-          GH_TOKEN: ${{ secrets.PAT }}
+          GH_TOKEN: ${{ steps.auth.outputs.token }}
         id: octocat
         name: Use Token
         run: |
